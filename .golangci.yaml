@@ -1,5 +1,4 @@
-run:
-  timeout: 3m
+version: "2"
 
 linters:
   enable:
@@ -10,5 +9,5 @@ linters:
     - ineffassign
     - revive
 
-issues:
-  exclude-use-default: false
+run:
+  timeout: 3m
