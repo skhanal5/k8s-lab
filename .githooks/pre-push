@@ -1,0 +1,10 @@
+#!/bin/sh
+
+echo "running tests..."
+
+if ! make test; then
+	echo "tests failed"
+	exit 1
+fi
+
+echo "ok"

@@ -1,0 +1,10 @@
+#!/bin/sh
+
+echo "running gofmt check..."
+
+if ! make fmt-check; then
+	echo "gofmt failed. Run: make fmt"
+	exit 1
+fi
+
+echo "ok"
