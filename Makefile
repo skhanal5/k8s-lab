@@ -1,6 +1,7 @@
 APP=k8s-lab
+GOLANGCI_LINT_VERSION=latest
 
-.PHONY: build run test fmt lint clean
+.PHONY: build run test fmt fmt-check lint clean
 
 build:
 	go build -o bin/$(APP) ./cmd/k8s-lab
