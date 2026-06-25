@@ -1,0 +1,13 @@
+.git
+.github
+.githooks
+
+bin/
+
+*.md
+*.log
+
+.vscode
+.idea
+
+.env
