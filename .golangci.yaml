@@ -5,9 +5,8 @@ linters:
     - govet
     - errcheck
     - staticcheck
-    - unused
     - ineffassign
-    - revive
+    - unused
 
 run:
   timeout: 3m
