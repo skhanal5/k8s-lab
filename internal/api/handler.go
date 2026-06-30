@@ -3,7 +3,6 @@ package api
 import (
 	"encoding/json"
 	"net/http"
-	"sync/atomic"
 )
 
 type Handler struct {
@@ -25,18 +24,13 @@ func (h *Handler) Health(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handler) Ready(w http.ResponseWriter, r *http.Request) {
-	// for the purposes of making the readiness probe fail.
-	c := atomic.AddInt32(&h.count, 1)
 
-	if c <= h.limit {
-		writeJSON(w, http.StatusOK, map[string]string{
-			"status": "it is working :)",
-		})
-		return
-	}
+	// writeJSON(w, http.StatusInternalServerError, map[string]string{
+	// 	"status": "it is broken :()",
+	// })
 
-	writeJSON(w, http.StatusInternalServerError, map[string]string{
-		"status": "it is broken :()",
+	writeJSON(w, http.StatusOK, map[string]string{
+		"status": "ready",
 	})
 }
 
@@ -70,6 +64,16 @@ func (h *Handler) Message(w http.ResponseWriter, r *http.Request) {
 			http.StatusMethodNotAllowed,
 		)
 	}
+}
+
+func (h *Handler) Memory(w http.ResponseWriter, r *http.Request) {
+	data := make([]byte, 200*1024*1024) // 200 MiB
+
+	_ = data
+
+	writeJSON(w, http.StatusOK, map[string]string{
+		"status": "allocated memory",
+	})
 }
 
 func writeJSON(

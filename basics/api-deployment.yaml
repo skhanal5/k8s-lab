@@ -16,13 +16,20 @@ spec:
     spec:
       containers:
       - name: k8s-lab
-        image: k8s-lab:v5
+        image: k8s-lab:v8
         imagePullPolicy: IfNotPresent
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "100m"
+          limits:
+            memory: "128Mi"
+            cpu: "200m"
         ports:
         - containerPort: 8080
         readinessProbe:
           httpGet:
-            path: /health
+            path: /ready
             port: 8080
           initialDelaySeconds: 5
           periodSeconds: 5
