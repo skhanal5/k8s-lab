@@ -19,7 +19,7 @@ localhost:8080
 Health check:
 
 ```bash
-curl localhost:8080/healthz
+curl localhost:8080/health
 ```
 
 Response:
