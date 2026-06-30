@@ -4,19 +4,55 @@ metadata:
   name: k8s-lab
   labels:
     app: k8s-lab
+
 spec:
-  replicas: 3
+  replicas: 1
+
   selector:
     matchLabels:
       app: k8s-lab
+
   template:
     metadata:
       labels:
         app: k8s-lab
+
     spec:
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: k8s-lab-data
+
       containers:
       - name: k8s-lab
-        image: k8s-lab
+        image: k8s-lab:v10
         imagePullPolicy: IfNotPresent
+
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "100m"
+          limits:
+            memory: "128Mi"
+            cpu: "200m"
+
+        volumeMounts:
+        - name: data
+          mountPath: /data
+
         ports:
         - containerPort: 8080
+
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: 8080
+          initialDelaySeconds: 5
+          periodSeconds: 5
+
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 10
+          periodSeconds: 10
