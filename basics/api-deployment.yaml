@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: k8s-lab
-        image: k8s-lab:v4
+        image: k8s-lab:v5
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 8080
