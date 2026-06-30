@@ -36,6 +36,22 @@ func (h *Handler) Health(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
+func (h *Handler) Info(w http.ResponseWriter, r *http.Request) {
+	switch r.Method {
+	case http.MethodGet:
+		writeJSON(w, http.StatusOK, map[string]string{
+			"message": "This is a sample API for k8s lab",
+		})
+
+	default:
+		http.Error(
+			w,
+			"method not allowed",
+			http.StatusMethodNotAllowed,
+		)
+	}
+}
+
 func (h *Handler) Message(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodGet:
