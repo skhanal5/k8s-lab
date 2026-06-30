@@ -3,6 +3,7 @@ package api
 import (
 	"encoding/json"
 	"net/http"
+	"sync/atomic"
 )
 
 type Handler struct {
@@ -17,22 +18,25 @@ func NewHandler() *Handler {
 }
 
 func (h *Handler) Health(w http.ResponseWriter, r *http.Request) {
-	// for the purposes of making the liveness probe fail.
-	// c := atomic.AddInt32(&h.count, 1)
-
-	// if c <= h.limit {
-	// 	writeJSON(w, http.StatusOK, map[string]string{
-	// 		"status": "ok",
-	// 	})
-	// 	return
-	// }
-
-	// writeJSON(w, http.StatusInternalServerError, map[string]string{
-	// 	"status": "fail",
-	// })
 
 	writeJSON(w, http.StatusOK, map[string]string{
 		"status": "ok",
+	})
+}
+
+func (h *Handler) Ready(w http.ResponseWriter, r *http.Request) {
+	// for the purposes of making the readiness probe fail.
+	c := atomic.AddInt32(&h.count, 1)
+
+	if c <= h.limit {
+		writeJSON(w, http.StatusOK, map[string]string{
+			"status": "it is working :)",
+		})
+		return
+	}
+
+	writeJSON(w, http.StatusInternalServerError, map[string]string{
+		"status": "it is broken :()",
 	})
 }
 

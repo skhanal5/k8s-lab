@@ -8,6 +8,7 @@ func NewRouter() http.Handler {
 	handler := NewHandler()
 
 	mux.HandleFunc("/health", handler.Health)
+	mux.HandleFunc("/ready", handler.Ready)
 	mux.HandleFunc("/api/v1/message", handler.Message)
 	mux.HandleFunc("/api/v1/info", handler.Health)
 
