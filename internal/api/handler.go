@@ -3,16 +3,19 @@ package api
 import (
 	"encoding/json"
 	"net/http"
+	"os"
 )
 
 type Handler struct {
-	count int32
-	limit int32
+	count    int32
+	limit    int32
+	dataFile string
 }
 
 func NewHandler() *Handler {
 	return &Handler{
-		limit: 5, // first 5 requests succeed
+		limit:    5, // first 5 requests succeed
+		dataFile: "/data/data.txt",
 	}
 }
 
@@ -74,6 +77,73 @@ func (h *Handler) Memory(w http.ResponseWriter, r *http.Request) {
 	writeJSON(w, http.StatusOK, map[string]string{
 		"status": "allocated memory",
 	})
+}
+
+func (h *Handler) Data(w http.ResponseWriter, r *http.Request) {
+
+	switch r.Method {
+	case http.MethodGet:
+		data, err := os.ReadFile(h.dataFile)
+
+		if os.IsNotExist(err) {
+			writeJSON(w, http.StatusNotFound, map[string]string{
+				"message": "no data found",
+			})
+			return
+		}
+
+		if err != nil {
+			http.Error(
+				w,
+				"failed to read data",
+				http.StatusInternalServerError,
+			)
+			return
+		}
+
+		writeJSON(w, http.StatusOK, map[string]string{
+			"message": string(data),
+		})
+	case http.MethodPost:
+		var body struct {
+			Message string `json:"message"`
+		}
+
+		err := json.NewDecoder(r.Body).Decode(&body)
+		if err != nil {
+			http.Error(
+				w,
+				"invalid request",
+				http.StatusBadRequest,
+			)
+			return
+		}
+
+		err = os.WriteFile(
+			h.dataFile,
+			[]byte(body.Message),
+			0644,
+		)
+
+		if err != nil {
+			http.Error(
+				w,
+				"failed to write data",
+				http.StatusInternalServerError,
+			)
+			return
+		}
+
+		writeJSON(w, http.StatusOK, map[string]string{
+			"status": "saved",
+		})
+	default:
+		http.Error(
+			w,
+			"method not allowed",
+			http.StatusMethodNotAllowed,
+		)
+	}
 }
 
 func writeJSON(
