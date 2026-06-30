@@ -6,14 +6,6 @@ import (
 	"sync/atomic"
 )
 
-tpackage api
-
-import (
-	"encoding/json"
-	"net/http"
-	"sync/atomic"
-)
-
 type Handler struct {
 	count int32
 	limit int32
